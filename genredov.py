@@ -76,6 +76,31 @@ class GenreDov(tk.Toplevel):
                     self.listbox.insert(tk.END, elem)
                 file_write()
 
+    def open_edit(self):
+        select = self.listbox.get(self.listbox.curselection())
+        if not select:
+            return
+        if len(str(select)) > 10:
+            mb.showerror("Помилка!", "При введенні назви допущені помилки")
+            return
+        if mb.askokcancel("Коригування", "Ви дійсно бажаєте змінити назву жанру "
+                                         + str(select) + "?"):
+            name1 = sd.askstring("Редагування жанру", "Введіть нову назву жанру:", initialvalue=str(select))
+
+            if genre:
+                for a in genre:
+                    if select in genre:
+                        genre.remove(select)
+                        genre.append(name1)
+                        genre.sort()
+                        file_write()
+
+                self.listbox.delete(0, tk.END)
+                for elem in genre:
+                    self.listbox.insert(tk.END, elem)
+            else:
+                mb.showerror("Помилка!", "Запис відсутній")
+
     def open_del(self):
         select = self.listbox.get(self.listbox.curselection())
         if genre:

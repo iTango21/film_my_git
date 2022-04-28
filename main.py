@@ -30,6 +30,25 @@ class App(tk.Tk):
         self.before_filter = True
         self.genre_filter = 'драма'
 
+    # функція відкриття вікна "Про програму"
+    def open_about(self):
+        about_dialog = about.About(self)
+        about_dialog.grab_set()
+
+    # функція відкриття вікна "Допомога"
+    def open_help(self):
+        os.startfile("helppp.pdf")
+
+    # функція відкриття вікна "Довідник країн"
+    def open_country(self):
+        count_dialog = country_dov.CountDov(self)
+        count_dialog.grab_set()
+
+    # функція відкриття вікна "Довідник жанрів"
+    def open_genre(self):
+        genre_dialog = genredov.GenreDov(self)
+        genre_dialog.grab_set()
+
     # функція закриття головного вікна програми
     def on_closing(self):
         if mb.askokcancel("Вихід", "Ви дійсно бажаєте вийти?"):

@@ -63,5 +63,63 @@ class CountDov(tk.Toplevel):
         self.dell.grid(row=2, column=0, padx=15, pady=10, ipadx=16)
 
 
+    def open_add(self):
+        name1 = sd.askstring("Додавання країни", "Введіть назву країни:")
+        if not(name1) or len(name1) > 20:
+            mb.showerror("Помилка!", "При введенні назви допущені помилки")
+            return
+
+        for a in country:
+            if name1 not in country:
+                country.append(name1)
+                country.sort()
+                self.listbox.delete(0, tk.END)
+                for elem in country:
+                    self.listbox.insert(tk.END, elem)
+                file_write()
+
+    def open_edit(self):
+        select = self.listbox.get(self.listbox.curselection())
+        if not select:
+            return
+        if len(str(select)) > 10:
+            mb.showerror("Помилка!", "При введенні назви допущені помилки")
+            return
+        if mb.askokcancel("Коригування", "Ви дійсно бажаєте змінити назву країни "
+                          + str(select) + "?"):
+            name1 = sd.askstring("Редагування країни", "Введіть нову назву країни:", initialvalue=str(select))
+
+            if country:
+                for a in country:
+                    if select in country:
+                        country.remove(select)
+                        country.append(name1)
+                        country.sort()
+                        file_write()
+
+                self.listbox.delete(0, tk.END)
+                for elem in country:
+                    self.listbox.insert(tk.END, elem)
+            else:
+                mb.showerror("Помилка!", "Запис відсутній")
+
+    def open_del(self):
+        select = self.listbox.get(self.listbox.curselection())
+        if country:
+            if mb.askokcancel("Видалення", "Ви дійсно бажаєте видалити країну "
+                              + str(select) + "?"):
+                for a in country:
+                    if select in country:
+                        country.remove(select)
+                        country.sort()
+                        file_write()
+
+                self.listbox.delete(0, tk.END)
+                for elem in country:
+                    self.listbox.insert(tk.END, elem)
+        else:
+            mb.showerror("Помилка!", "Запис відсутній")
+
+
 if __name__ == "__main__":
     print("Запускайте файл main.py")

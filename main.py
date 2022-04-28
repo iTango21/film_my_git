@@ -39,6 +39,29 @@ class App(tk.Tk):
     def open_help(self):
         os.startfile("helppp.pdf")
 
+    # функція відкриття вікна ":: Друк елемента ::"
+    def print_elem(self):
+        # Відкриття файлу виводу reselem.html
+        select = self.tree.item(self.tree.selection())['values']
+        if not (select):
+            mb.showerror(":: Друк елемента ::", "Виберіть фільм!")
+            return
+        try:
+            fout = open('reselem.html', 'wt')
+        except:
+            mb.showinfo('Помилка', 'Неможливо створити файл виводу!!!')
+            return
+        print('<html><head><title>Інформація про фільм</title></head><body>', file=fout)
+        print('<p>Назва фільму: {}</p>'.format(select[0]), file=fout)
+        print('<p>Країна: {}</p>'.format(select[1]), file=fout)
+        print('<p>Жанр: {}</p>'.format(select[2]), file=fout)
+        print('<p>Рік: {}</p>'.format(select[3]), file=fout)
+        print('<p>Режисер: {}</p>'.format(select[4]), file=fout)
+        print('<p>Оскар: {}</p>'.format(select[5]), file=fout)
+        print('</body></html>', file=fout)
+        fout.close()
+        os.startfile("reselem.html")
+
     # функція відкриття вікна "Довідник країн"
     def open_country(self):
         count_dialog = country_dov.CountDov(self)
@@ -55,3 +78,10 @@ class App(tk.Tk):
             self.curs.close()
             self.conn.close()
             self.destroy()
+
+            if __name__ == "__main__":
+                app = App()
+                app.mainloop()
+
+            if __name__ == "__main__":
+                print("Запускайте файл main.py")

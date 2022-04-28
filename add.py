@@ -88,6 +88,47 @@ class Add(tk.Toplevel):
         self.genrecombobox.insert(0, genre)
         self.oscaredit.insert(0, oscar)
 
+    def on_closing(self):
+        self.nameedit.delete(0, tk.END)
+        self.destroy()
+
+    def cancel(self):
+        self.nameedit.delete(0, tk.END)
+        self.destroy()
+
+    def ok(self):
+        flag = True
+        if len(str(self.name.get())) == 0 or len(str(self.country.get())) == 0 \
+                or len(str(self.director.get())) == 0 or len(str(self.genre.get())) == 0:
+            flag = False
+        if len(str(self.name.get())) > 30 or len(str(self.country.get())) > 15 \
+                or len(str(self.director.get())) > 30 or len(str(self.genre.get())) > 30:
+            flag = False
+        try:
+            year = int(self.year.get())
+            print(year)
+        except:
+            flag = False
+        else:
+            if year < 1900 or year > 2022:
+                flag = False
+        if flag:
+            self.destroy()
+        else:
+            mb.showerror("Помилка!", "При введенні даних допущені помилки")
+
+    def save(self):
+        # self.destroy()
+        #   name;country;genre;year;director;oscars
+        #   Назва Країна Жанр Рік Режисер Оскар(к-ть)
+        return (self.name.get(),
+                self.country.get(),
+                self.genre.get(),
+                self.year.get(),
+                self.director.get(),
+                self.oscar.get()
+                )
+
 
 if __name__ == "__main__":
     print("Запускайте файл main.py")

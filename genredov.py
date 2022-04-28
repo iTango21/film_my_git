@@ -61,6 +61,38 @@ class GenreDov(tk.Toplevel):
         self.edit.grid(row=1, column=0, padx=15, pady=10, ipadx=15)
         self.dell.grid(row=2, column=0, padx=15, pady=10, ipadx=16)
 
+    def open_add(self):
+        name1 = sd.askstring("Додавання жанру", "Введіть назву жанру:")
+        if not (name1) or len(name1) > 20:
+            mb.showerror("Помилка!", "При введенні назви допущені помилки")
+            return
+
+        for a in genre:
+            if name1 not in genre:
+                genre.append(name1)
+                genre.sort()
+                self.listbox.delete(0, tk.END)
+                for elem in genre:
+                    self.listbox.insert(tk.END, elem)
+                file_write()
+
+    def open_del(self):
+        select = self.listbox.get(self.listbox.curselection())
+        if genre:
+            if mb.askokcancel("Видалення", "Ви дійсно бажаєте видалити жанр "
+                                           + str(select) + "?"):
+                for a in genre:
+                    if select in genre:
+                        genre.remove(select)
+                        genre.sort()
+                        file_write()
+
+                self.listbox.delete(0, tk.END)
+                for elem in genre:
+                    self.listbox.insert(tk.END, elem)
+        else:
+            mb.showerror("Помилка!", "Запис відсутній")
+
 
 if __name__ == "__main__":
     print("Запускайте файл main.py")

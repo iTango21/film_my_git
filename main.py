@@ -62,6 +62,36 @@ class App(tk.Tk):
         fout.close()
         os.startfile("reselem.html")
 
+    # функція відкриття вікна "Друк списку"
+    def print_list(self):
+        # Відкриття файлу виводу reslist.html
+        try:
+            fout = open('reslist.html', 'wt')
+        except:
+            mb.showerror('Помилка', 'Неможливо створити файл виводу!!!')
+            return
+        print('<html><head><title>Список елементів</title></head><body>', file=fout)
+        print('<table border = "1" cellpadding="5">', file=fout)
+        print(
+            '<tr bgcolor="yellow"><td>Назва фільму</td><td>Країна</td><td>Жанр</td><td>Рік</td><td>Режисер</td><td>Оскар</td></tr>',
+            file=fout)
+
+        df = pd.read_csv('movie5.csv', sep=';', header=0)
+        df = df.sort_values(by='name', ascending=True)
+
+        for select in df.values.tolist():
+            print('<tr>', file=fout)
+            print('<td>{}</td>'.format(select[0]), file=fout)
+            print('<td>{}</td>'.format(select[1]), file=fout)
+            print('<td>{}</td>'.format(select[2]), file=fout)
+            print('<td>{}</td>'.format(select[3]), file=fout)
+            print('<td>{}</td>'.format(select[4]), file=fout)
+            print('<td>{}</td>'.format(select[5]), file=fout)
+            print('</tr>', file=fout)
+        print('</table></body></html>', file=fout)
+        fout.close()
+        os.startfile("reslist.html")
+
     # функція відкриття вікна "Довідник країн"
     def open_country(self):
         count_dialog = country_dov.CountDov(self)

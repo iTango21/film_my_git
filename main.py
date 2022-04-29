@@ -113,6 +113,89 @@ class App(tk.Tk):
         for elem in df.values.tolist():
             self.tree.insert("", tk.END, values=elem)
 
+    # функція виведення списку фільмів з фільтруванням
+    def view(self):
+        self.tree.delete(*self.tree.get_children())
+        if self.filter == "1":
+            df = pd.read_csv('movie5.csv', sep=';', header=0)
+            df = df.sort_values(by='name', ascending=True)
+            self.status['text'] = " Фільтр: весь список"
+        elif self.filter == "2":
+            s = " Фільтр: за роком створення"
+            if self.before_filter:
+                df = pd.read_csv('movie5.csv', sep=';', header=0)
+                df = df.loc[df["year"] < self.year_filter].head()
+                s = s + " - до "
+            else:
+                df = pd.read_csv('movie5.csv', sep=';', header=0)
+                df = df.loc[df["year"] > self.year_filter].head()
+                s = s + " - після "
+            s = s + str(self.year_filter) + " року"
+            self.status['text'] = s
+        elif self.filter == "3":
+            df = pd.read_csv('movie5.csv', sep=';', header=0)
+            df = df.loc[df["country"] == self.country_filter].head()
+            self.status['text'] = " Фільтр: за країною - " + self.country_filter
+        elif self.filter == "4":
+            df = pd.read_csv('movie5.csv', sep=';', header=0)
+            df = df.loc[df["genre"] == self.genre_filter].head()
+            self.status['text'] = " Фільтр: за жанром - " + self.genre_filter
+
+        for elem in df.values.tolist():
+            self.tree.insert("", tk.END, values=elem)
+
+
+    # функція фільтрування - весь список
+    def filter_all(self):
+        self.filter = self.radio.get()
+        self.view()
+
+    # функція фільтрування - за роком створення
+    def filter_year(self):
+        filt = self.radio.get()
+        year_dialog = yearfilter.YearFilter(self)
+        year_dialog.grab_set()
+        year_dialog.wait_window()
+        year = year_dialog.save()
+        if not (year[0]):
+            self.radio.set(self.filter)
+            return
+        self.year_filter = int(year[0])
+        if year[1] == 1:
+            self.before_filter = True
+        else:
+            self.before_filter = False
+        self.filter = filt
+        self.view()
+
+    # функція фільтрування - за країною
+    def filter_country(self):
+        filt = self.radio.get()
+        country_dialog = countryfilter.CountryFilter(self)
+        country_dialog.grab_set()
+        country_dialog.wait_window()
+        country = country_dialog.save()
+        if not (country):
+            self.radio.set(self.filter)
+            return
+        self.country_filter = country
+        self.filter = filt
+        self.view()
+
+    # функція фільтрування - за жанром
+    def filter_genre(self):
+        filt = self.radio.get()
+        genre_dialog = genrefilter.GenreFilter(self)
+        genre_dialog.grab_set()
+        genre_dialog.wait_window()
+        genre = genre_dialog.save()
+        if not (genre):
+            self.radio.set(self.filter)
+            return
+        self.genre_filter = genre
+        self.filter = filt
+        self.view()
+
     # функція відкриття вікна "Пошук"
     def open_find(self):
         name = sd.askstring("Пошук", "Введіть назву фільму:")

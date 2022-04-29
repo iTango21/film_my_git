@@ -196,6 +196,62 @@ class App(tk.Tk):
         self.filter = filt
         self.view()
 
+    # функція відкриття вікна "Додавання фільму"
+    def open_add(self):
+        add_dialog = add.Add(self, '', '', '', '', '', '')
+        add_dialog.grab_set()
+        add_dialog.wait_window()
+        film = add_dialog.save()
+        if not (film[0]):
+            return
+        aaa = df.loc[df['name'].str.contains(film[0], case=False)]
+        if aaa.empty:
+            print(film)
+            df.loc[len(df.index)] = [film[0], film[1], film[2], film[3], film[4], film[5]]
+            df.to_csv('movie5.csv', sep=';', index=False)
+        else:
+            mb.showinfo("Увага!", "Такий фільм вже існує!")
+        self.view()
+
+    # функція відкриття вікна "Редагування фільму"
+    def open_edit(self):
+        select = self.tree.item(self.tree.selection())['values']
+
+        if not (select):
+            mb.showerror("Коригування.", "Виберіть фільм!")
+            return
+
+        add_dialog = add.Add(self, select[0], select[1], select[3], select[4], select[2], select[5])
+        add_dialog.grab_set()
+
+        add_dialog.wait_window()
+        film = add_dialog.save()
+
+        if not (film[0]):
+            return
+        if mb.askokcancel("Коригування", "Ви дійсно бажаєте внести зміни в інформацію про фільм "
+                                         + str(select[0]) + "?"):
+            df_edit = pd.read_csv("movie5.csv", sep=';', index_col="name")
+            df_edit.drop([select[0]], inplace=True)
+            df_edit.to_csv('movie5.csv', sep=';')
+            df = pd.read_csv('movie5.csv', sep=';', header=0)
+            df.loc[len(df.index)] = [film[0], film[1], film[2], film[3], film[4], film[5]]
+            df.to_csv('movie5.csv', sep=';', index=False)
+            self.view()
+
+    # функція відкриття вікна "Видалення фільму"
+    def open_del(self):
+        select = self.tree.item(self.tree.selection())['values']
+        if select[0]:
+            if mb.askokcancel("Видалення", "Ви дійсно бажаєте видалити фільм "
+                                           + str(select[0]) + "?"):
+                df = pd.read_csv("movie5.csv", sep=';', index_col="name")
+                df.drop([select[0]], inplace=True)
+                df.to_csv('movie5.csv', sep=';')
+                self.view()
+        else:
+            mb.showerror("Помилка!", "Запис відсутній")
+
     # функція відкриття вікна "Пошук"
     def open_find(self):
         name = sd.askstring("Пошук", "Введіть назву фільму:")
